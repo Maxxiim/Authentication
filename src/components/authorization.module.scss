@@ -29,9 +29,11 @@
 }
 
 .passwordIcon{
+    border: none;
+    background: none;
     position: absolute;
     top: 4px;
-    right: 5px;
+    right: 0px;
     stroke:#727272;
     fill: none;
     transition: all .2s ease-in-out;
@@ -40,4 +42,20 @@
         cursor: pointer;
     stroke:red;
     }
+}
+
+.passwordIconActive{
+   border: none;
+    background: none;
+    position: absolute;
+    top: 4px;
+    right: 0px;
+    stroke:red;
+    fill: none;
+    transition: all .2s ease-in-out;
+    
+    &:hover{
+        cursor: pointer;
+    stroke:727272;
+    } 
 }
