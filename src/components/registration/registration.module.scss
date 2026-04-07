@@ -1,0 +1,126 @@
+
+.form{
+    width: 250px;
+    display: none;
+}
+
+.block{
+    position: relative;
+}
+
+input{
+    outline: none;
+     outline: none;
+     font-size: 16;
+     color: black;
+     padding: 10px;
+     border-radius: 5px;
+}
+.wrapperHeader{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 250px;
+}
+.title{
+    color:#000;
+    width: 100%;
+    font-size: 30px;
+    text-align: center;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+
+.passwordConfirm{
+    margin-bottom: 15px;
+}
+.errorPasswordConfirm{
+    position: absolute;
+    left: 0;
+    bottom: -16px;
+    color: red;
+    font-size: 13px;
+    display: inline-flex;
+}
+.errorPassword{
+    position: relative;
+    color: red;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.error{
+    position: absolute;
+    left: 0;
+    bottom: -18px;
+    color: red;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.span{
+    display: inline-block;
+    margin-bottom: 5px;    
+}
+
+.password, .name{
+    width: 250px;
+   
+}
+
+.label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.passwordIcon{
+    border: none;
+    background: none;
+    position: absolute;
+    bottom: 6px;
+    right: 0px;
+    stroke:#727272;
+    fill: none;
+    transition: all .2s ease-in-out;
+    
+    &:hover{
+        cursor: pointer;
+    stroke:red;
+    }
+}
+
+.passwordIconActive{
+   border: none;
+    background: none;
+    position: absolute;
+    bottom: 6px;
+    right: 0px;
+    stroke:red;
+    fill: none;
+    transition: all .2s ease-in-out;
+    
+    &:hover{
+        cursor: pointer;
+    stroke:727272;
+    } 
+}
+
+.btnIn{
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    background: #000;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all .2s ease-in;
+    
+    
+    &:hover{
+    background: #cbcbcb;
+    color: #000;
+    z-index: 100;
+    }
+}

@@ -37,11 +37,11 @@ body{
     position: relative;
 }
 
-.error{
+/* .error{
     position: absolute;
     left: 0;
     bottom: -30px;
     font-size: 13px;
     display: inline-flex;
     color: red;
-}
+} */
