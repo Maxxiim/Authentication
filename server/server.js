@@ -1,6 +1,7 @@
 const http = require('http');
 
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const JWT_SECRET = 'my_super_secret_key';
 const PORT = 3000;
@@ -9,11 +10,10 @@ const users = [
   {
     id: 1,
     name: 'Alex',
+    email: 'test@mail.ru',
     password: '123456',
   },
 ];
-
-console.log(users);
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
@@ -58,8 +58,57 @@ const server = http.createServer(async (req, res) => {
       });
       sendJSON(res, 200, { token });
     } else {
-      sendJSON(res, 401, { message: 'Неверный email or пароль' });
+      sendJSON(res, 401, { message: 'Неверный email или пароль' });
     }
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/registration') {
+    const { name, email, password } = await parseBody(req);
+
+    if (!name || !email || !password) {
+      return sendJSON(res, 400, { message: 'Необходимо заполнить все поля' });
+    }
+
+    const findName = users.find((u) => u.name === name);
+    const findEmail = users.find((u) => u.email === email);
+
+    if (findName) {
+      sendJSON(res, 409, {
+        message: 'Пользователь с таким именем уже существует',
+      });
+    }
+
+    if (findEmail) {
+      sendJSON(res, 409, {
+        message: 'Пользователь с таким email уже существует',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = {
+      id: Date.now(),
+      name,
+      email,
+      password: hashedPassword,
+    };
+
+    const token = jwt.sign(
+      {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' },
+    );
+
+    sendJSON(res, 201, {
+      message: 'Регистрация прошла успешно',
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email },
+    });
     return;
   }
 

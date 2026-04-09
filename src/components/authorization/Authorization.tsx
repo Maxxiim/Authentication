@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { url } from '../../api/url';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
+
 import styles from './authorization.module.scss';
 
 interface UserLogin {
@@ -26,7 +27,10 @@ function Authorization() {
     },
   });
 
-  const togglePassword = () => setShowPassword((prev) => !prev);
+  const togglePassword = useCallback(
+    () => setShowPassword((prev) => !prev),
+    [],
+  );
 
   const onSubmit = async (data: UserLogin) => {
     try {
@@ -41,6 +45,7 @@ function Authorization() {
       if (!response.ok) {
         throw new Error(responseData.message || 'Ошибка входа');
       }
+      console.log(data);
       localStorage.setItem('token', responseData.token);
       reset();
       setError('');
@@ -55,9 +60,9 @@ function Authorization() {
         <h1 className={`${styles.title}`}>ВХОД</h1>
         {error && <p className={`${styles.error}`}>{error}</p>}
       </div>
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className={`${styles.name}`}>
-          <label className={`${styles.labelName}`} htmlFor="name">
+      <form className={`${styles.form}`} onSubmit={handleSubmit(onSubmit)}>
+        <div className={`${styles.block}${styles.name}`}>
+          <label className={`${styles.label}`} htmlFor="name">
             <span className={`${styles.span}`}>name</span>
             <input
               style={{ display: 'relative' }}
@@ -75,8 +80,8 @@ function Authorization() {
           />
         </div>
 
-        <div className={`${styles.password}`}>
-          <label className={`${styles.labelPassword}`} htmlFor="password">
+        <div className={`${styles.block}${styles.password}`}>
+          <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>password</span>
             <input
               type={showPassword ? 'text' : 'password'}
@@ -140,7 +145,7 @@ function Authorization() {
             </button>
           </label>
         </div>
-        <button className={`${styles.btnIn}`} type="submit">
+        <button className={`${styles.btn}`} type="submit">
           Войти
         </button>
       </form>

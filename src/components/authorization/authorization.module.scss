@@ -2,6 +2,9 @@
     width: 250px;
 }
 
+.block{
+    position: relative;
+}
 
 input{
     outline: none;
@@ -27,14 +30,21 @@ input{
     margin-bottom: 20px;
 }
 
+
+.errorPassword{
+    position: relative;
+    color: red;
+    font-size: 13px;
+    display: inline-flex;
+}
+
 .error{
     position: absolute;
     left: 0;
-    width: 250px;
-    font-size: 13px;
-    text-align: left;
-    display:  inline-flex;
+    bottom: -18px;
     color: red;
+    font-size: 13px;
+    display: inline-flex;
 }
 
 .span{
@@ -44,10 +54,9 @@ input{
 
 .password, .name{
     width: 250px;
-   
 }
 
-.labelPassword,.labelName {
+.label {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -85,12 +94,13 @@ input{
     } 
 }
 
-.btnIn{
+.btn{
+    width: 100%;
     cursor: pointer;
     border: none;
     color: #fff;
     background: #000;
-    padding: 10px;
+    padding: 15px;
     border-radius: 10px;
     transition: all .2s ease-in;
     
