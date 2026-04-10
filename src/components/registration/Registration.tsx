@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { url } from '../../api/url';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
@@ -13,15 +13,16 @@ interface UserLogin {
 }
 
 function Registration() {
-  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const [generalError, setGeneralError] = useState('');
   const {
     register,
     handleSubmit,
     reset,
+    setError,
     watch,
     formState: { errors },
+    clearErrors,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -41,7 +42,6 @@ function Registration() {
     try {
       const { passwordConfirm, ...dataForServer } = data;
 
-      console.log(dataForServer);
       const response = await fetch(`${url}/registration`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -49,27 +49,43 @@ function Registration() {
       });
 
       const responseData = await response.json();
+      
+
+      if (responseData.fields && Array.isArray(responseData.fields)) {
+        console.log(responseData)
+        setGeneralError(responseData.message);
+
+        responseData.fields.forEach((field) => {
+          setError(field, { type: 'manual', message: '' });
+        });
+      }
 
       if (!response.ok) {
         throw new Error(responseData.message || 'Ошибка входа');
       }
-      console.log(dataForServer);
       reset();
     } catch (error) {
-      setError(error);
+      throw new Error(error);
     }
   };
 
   return (
     <div className="wrapper">
-      <h1 className={`${styles.title}`}>Регистрация</h1>
-      {error && <p className={`${styles.error}`}>{error}</p>}
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+      <div className={`${styles.wrapperHeader}`}>
+        <h1 className={`${styles.title}`}>Регистрация</h1>
+        {generalError && <p className={styles.error}>{generalError}</p>}
+      </div>
+
+      <form className={`${styles.form}`} onSubmit={handleSubmit(onSubmit)}>
         <div className={`${styles.block} ${styles.name}`}>
           <label className={`${styles.label}`} htmlFor="name">
             <span className={`${styles.span}`}>Логин</span>
             <input
-              style={{ display: 'relative' }}
+              className={
+                errors.name
+                  ? `${styles.errorsInput}`
+                  : `${styles.errorsInputDef}`
+              }
               id="name"
               {...register('name', {
                 required: true,
@@ -82,23 +98,19 @@ function Registration() {
                   message: 'Максимальная длина 20',
                 },
               })}
+              onFocus={() => clearErrors('name')}
             />
-          </label>
-
-          <ErrorMessage
-            errors={errors}
-            name="name"
-            render={({ message }) => (
-              <span className={`${styles.error}`}>{message}</span>
+            {errors.name && errors.name.type !== 'manual' && (
+              <p className={styles.error}>{errors.name.message}</p>
             )}
-          />
+          </label>
         </div>
 
         <div className={`${styles.block} ${styles.email}  `}>
           <label className={`${styles.label}`} htmlFor="email">
             <span className={`${styles.span}`}>Email</span>
             <input
-              value={'asd@Mail.ru'}
+              className={errors.email ? `${styles.errorsInput}` : ''}
               style={{ display: 'relative' }}
               id="email"
               {...register('email', {
@@ -108,16 +120,12 @@ function Registration() {
                   message: 'Невалидный email',
                 },
               })}
+              onFocus={() => clearErrors('email')}
             />
           </label>
-
-          <ErrorMessage
-            errors={errors}
-            name="email"
-            render={({ message }) => (
-              <span className={`${styles.error}`}>{message}</span>
-            )}
-          />
+          {errors.email && (
+            <p className={`${styles.error}`}>{errors.email?.message}</p>
+          )}
         </div>
 
         <div className={`${styles.block} ${styles.password}`}>
@@ -140,7 +148,6 @@ function Registration() {
               })}
             />
           </label>
-
           <ErrorMessage
             errors={errors}
             name="password"

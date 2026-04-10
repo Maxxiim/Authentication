@@ -1,6 +1,12 @@
 .form{
     width: 250px;
-    display: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.errorsInput{
+    border: 1px solid red;
 }
 
 .block{
@@ -107,6 +113,7 @@ input{
 }
 
 .btn{
+    width: 100%;
     cursor: pointer;
     border: none;
     color: #fff;

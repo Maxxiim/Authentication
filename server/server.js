@@ -33,7 +33,7 @@ function parseBody(req) {
 
 function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, { 'Content-type': 'application/json' });
-  res.end(JSON.stringify(data));
+  return res.end(JSON.stringify(data));
 }
 
 const server = http.createServer(async (req, res) => {
@@ -73,15 +73,24 @@ const server = http.createServer(async (req, res) => {
     const findName = users.find((u) => u.name === name);
     const findEmail = users.find((u) => u.email === email);
 
+    if (findEmail && findEmail) {
+      return sendJSON(res, 409, {
+        message: 'Пользователь с таким именем и email уже существует',
+        fields: ['name', 'email'],
+      });
+    }
+
     if (findName) {
-      sendJSON(res, 409, {
+      return sendJSON(res, 409, {
         message: 'Пользователь с таким именем уже существует',
+        fields: ['name'],
       });
     }
 
     if (findEmail) {
-      sendJSON(res, 409, {
+      return sendJSON(res, 409, {
         message: 'Пользователь с таким email уже существует',
+        fields: ['email'],
       });
     }
 
@@ -103,6 +112,8 @@ const server = http.createServer(async (req, res) => {
       JWT_SECRET,
       { expiresIn: '1h' },
     );
+
+    users.push(newUser);
 
     sendJSON(res, 201, {
       message: 'Регистрация прошла успешно',
