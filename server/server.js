@@ -73,7 +73,7 @@ const server = http.createServer(async (req, res) => {
     const findName = users.find((u) => u.name === name);
     const findEmail = users.find((u) => u.email === email);
 
-    if (findEmail && findEmail) {
+    if (findName && findEmail) {
       return sendJSON(res, 409, {
         message: 'Пользователь с таким именем и email уже существует',
         fields: ['name', 'email'],
