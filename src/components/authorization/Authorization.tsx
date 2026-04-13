@@ -108,6 +108,11 @@ function Authorization() {
             </button>
           </label>
         </div>
+        <Link className={`${styles.restore}`} to="/restore">
+          <button className={`${styles.restore}`} type="button">
+            Восстановить пароль?
+          </button>
+        </Link>
         <button className={`${styles.btn}`} type="submit">
           Войти
         </button>

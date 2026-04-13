@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { url } from '../../api/url';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
+import { url } from '../../api/url';
 import HidePassword from '../../assets/HidePassword';
 
 import { useTogglePassword } from '../../utils/togglePassword';
 
 import styles from './registration.module.scss';
-import { Link } from 'react-router-dom';
 
 interface UserLogin {
   name: string;
@@ -18,7 +18,7 @@ interface UserLogin {
 }
 
 function Registration() {
-  const { showPassword, togglePassword } = useTogglePassword();
+  const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
 
   const [generalError, setGeneralError] = useState('');
   const {
@@ -74,7 +74,7 @@ function Registration() {
 
   return (
     <div className="wrapper">
-      <Link to="/login">
+      <Link to="/">
         <button className={`${styles.btn} ${styles.btnRegister}`}>Вход</button>
       </Link>
       <div className={`${styles.wrapperHeader}`}>

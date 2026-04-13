@@ -6,5 +6,5 @@ export const useTogglePassword = () => {
   const togglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
-  return { showPassword, togglePassword };
+  return { showPassword, togglePassword, setShowPassword };
 };

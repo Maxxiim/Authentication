@@ -3,6 +3,8 @@ const http = require('http');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const crypto = require('crypto');
+
 const JWT_SECRET = 'my_super_secret_key';
 const PORT = 3000;
 
@@ -15,10 +17,13 @@ const users = [
   },
 ];
 
+const resetStore = new Map();
+
 function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
 
+    console.log(body);
     req.on('data', (chunk) => (body += chunk));
     req.on('end', () => {
       try {
@@ -44,6 +49,27 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/restore') {
+    const { email } = await parseBody(req);
+    const user = users.find((u) => u.email === email);
+
+    if (user) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const expires = (Date = new Date(Date.now() + 3600000));
+      resetStore.set(token, {
+        email,
+        expires,
+      });
+      const resetLink = 'http://localhost:3000/reset?token=' + token;
+      console.log('Ссылка для сброса ', resetLink);
+    } else {
+      sendJSON(res, 401, {
+        message: 'Пользователя с таким email не существует',
+      });
+    }
     return;
   }
 
