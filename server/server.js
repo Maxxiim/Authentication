@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 const crypto = require('crypto');
 
-const JWT_SECRET = 'my_super_secret_key';
+const JWT_SECRET = 'my_secret_key';
 const PORT = 3000;
 
 const users = [
@@ -52,18 +52,25 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'POST' && req.url === '/reset') {
+    const { password } = await parseBody(req);
+    console.log(password);
+  }
+
+  console.log(resetStore);
+
   if (req.method === 'POST' && req.url === '/restore') {
     const { email } = await parseBody(req);
     const user = users.find((u) => u.email === email);
 
     if (user) {
       const token = crypto.randomBytes(32).toString('hex');
-      const expires = (Date = new Date(Date.now() + 3600000));
+      const expires = new Date(Date.now() + 3600000);
       resetStore.set(token, {
         email,
         expires,
       });
-      const resetLink = 'http://localhost:3000/reset?token=' + token;
+      const resetLink = 'http://localhost:5173/reset?token=' + token;
       console.log('Ссылка для сброса ', resetLink);
     } else {
       sendJSON(res, 401, {

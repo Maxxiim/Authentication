@@ -42,7 +42,6 @@ function RestorePassword() {
               style={{ display: 'relative' }}
               id="email"
               {...register('email', {
-                required: true,
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                   message: 'Невалидный email',
