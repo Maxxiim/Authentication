@@ -1,30 +1,47 @@
-import { useForm } from 'react-hook-form';
-import { url } from '../../api/url';
+import { useForm } from "react-hook-form";
+import { url } from "../../api/url";
 
-import styles from './restore.module.scss';
+import { useNavigate } from "react-router-dom";
+
+import styles from "./restore.module.scss";
+import { useState } from "react";
 
 function RestorePassword() {
+  const [message, setMessage] = useState("");
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
     clearErrors,
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: { email: string }) => {
+    setMessage("");
+
     try {
       const response = await fetch(`${url}/restore`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       const responseData = await response.json();
-      console.log(responseData);
+
+      if (responseData) {
+        reset();
+        setMessage("Успешно! Письмо отправлено на почту!");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -32,22 +49,22 @@ function RestorePassword() {
 
   return (
     <div>
+      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={`${styles.block} ${styles.email}  `}>
           <label className={`${styles.label}`} htmlFor="email">
             <span className={`${styles.span}`}>Email</span>
             <input
-              value={'test@mail.ru'}
-              className={errors.email ? `${styles.errorsInput}` : ''}
-              style={{ display: 'relative' }}
+              className={errors.email ? `${styles.errorsInput}` : ""}
+              style={{ display: "relative" }}
               id="email"
-              {...register('email', {
+              {...register("email", {
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: 'Невалидный email',
+                  message: "Невалидный email",
                 },
               })}
-              onFocus={() => clearErrors('email')}
+              onFocus={() => clearErrors("email")}
             />
           </label>
           {errors.email && (

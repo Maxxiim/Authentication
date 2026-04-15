@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { url } from '../../api/url';
-import { useForm } from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { url } from "../../api/url";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
+import { Link } from "react-router-dom";
 
-import HidePassword from '../../assets/HidePassword';
-import { useTogglePassword } from '../../utils/togglePassword';
+import HidePassword from "../../assets/HidePassword";
+import { useTogglePassword } from "../../utils/togglePassword";
 
-import styles from './authorization.module.scss';
+import styles from "./authorization.module.scss";
 
 interface UserLogin {
   name: string;
@@ -15,7 +15,7 @@ interface UserLogin {
 }
 
 function Authorization() {
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { showPassword, togglePassword } = useTogglePassword();
 
   const {
@@ -24,31 +24,31 @@ function Authorization() {
     reset,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      name: '',
-      password: '',
+      name: "",
+      password: "",
     },
   });
 
   const onSubmit = async (data: UserLogin) => {
     try {
       const response = await fetch(`${url}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: data.name, password: data.password }),
       });
 
       const responseData = await response.json();
 
       if (!response.ok) {
-        throw new Error(responseData.message || 'Ошибка входа');
+        throw new Error(responseData.message || "Ошибка входа");
       }
-      alert('Вы успешно авторизовались ');
+      alert("Вы успешно авторизовались ");
       console.log(data);
-      localStorage.setItem('token', responseData.token);
+      localStorage.setItem("token", responseData.token);
       reset();
-      setError('');
+      setError("");
     } catch (error) {
       setError(error.message);
     }
@@ -70,9 +70,9 @@ function Authorization() {
           <label className={`${styles.label}`} htmlFor="name">
             <span className={`${styles.span}`}>name</span>
             <input
-              style={{ display: 'relative' }}
+              style={{ display: "relative" }}
               id="name"
-              {...register('name', {
+              {...register("name", {
                 required: true,
               })}
             />
@@ -89,9 +89,9 @@ function Authorization() {
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>password</span>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
-              {...register('password', {
+              {...register("password", {
                 required: true,
               })}
             />
@@ -108,11 +108,13 @@ function Authorization() {
             </button>
           </label>
         </div>
-        <Link className={`${styles.restore}`} to="/restore">
-          <button className={`${styles.restore}`} type="button">
-            Восстановить пароль?
-          </button>
-        </Link>
+        {error && (
+          <Link className={`${styles.restore}`} to="/restore">
+            <button className={`${styles.restore}`} type="button">
+              Восстановить пароль?
+            </button>
+          </Link>
+        )}
         <button className={`${styles.btn}`} type="submit">
           Войти
         </button>

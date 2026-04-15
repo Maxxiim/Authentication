@@ -1,11 +1,11 @@
-import { ErrorMessage } from '@hookform/error-message';
-import { useForm } from 'react-hook-form';
-import HidePassword from '../../assets/HidePassword';
-import { url } from '../../api/url';
+import { ErrorMessage } from "@hookform/error-message";
+import { useForm } from "react-hook-form";
+import HidePassword from "../../assets/HidePassword";
+import { url } from "../../api/url";
 
-import { useTogglePassword } from '../../utils/togglePassword';
+import { useTogglePassword } from "../../utils/togglePassword";
 
-import styles from './resetPassword.module.scss';
+import styles from "./resetPassword.module.scss";
 
 function ResetPassword() {
   const {
@@ -14,37 +14,33 @@ function ResetPassword() {
     watch,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      password: '',
-      passwordConfirm: '',
+      password: "",
+      passwordConfirm: "",
     },
   });
 
   const onSubmit = async (data) => {
-    console.log(data)
     try {
       const urlParams = new URLSearchParams(window.location.search);
-      
-      const token = urlParams.get('token');
-      
-      data.token = token;
-      
+
+      const token = urlParams.get("token");
+      data["token"] = token;
+
       const { passwordConfirm, ...dataForServer } = data;
 
-        const response = await fetch(`${url}/reset`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataForServer, token }),
-        });
+      const response = await fetch(`${url}/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataForServer),
+      });
 
-        const responseData = await response.json();
-        console.log(responseData);
+      const responseData = await response.json();
+      console.log(responseData);
     } catch (error) {
       console.log(error);
     }
-
-    console.log(dataForServer);
   };
 
   const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
@@ -56,19 +52,20 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>Пароль</span>
             <input
+              value={"12314124a"}
               // type={showPassword ? 'text' : 'password'}
               type="text"
               id="password"
-              {...register('password', {
+              {...register("password", {
                 required: true,
                 minLength: {
                   value: 6,
-                  message: 'Минимальное количество символов 6',
+                  message: "Минимальное количество символов 6",
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
                   message:
-                    'Необходимо указать как минимум одну букву и одну цифру',
+                    "Необходимо указать как минимум одну букву и одну цифру",
                 },
               })}
             />
@@ -79,7 +76,7 @@ function ResetPassword() {
             render={({ message }) => (
               <p
                 className={
-                  errors.password?.type === 'pattern'
+                  errors.password?.type === "pattern"
                     ? styles.errorPassword
                     : styles.error
                 }
@@ -94,13 +91,14 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="passwordConfirm">
             <span className={`${styles.span}`}>Подтвердить пароль</span>
             <input
+              value={"12314124a"}
               type="text"
               // type={showPassword ? 'text' : 'password'}
               id="passwordConfirm"
-              {...register('passwordConfirm', {
+              {...register("passwordConfirm", {
                 required: true,
                 validate: (value) =>
-                  value === watch('password') || 'Пароли не совпадают',
+                  value === watch("password") || "Пароли не совпадают",
               })}
             />
             <button
@@ -122,7 +120,7 @@ function ResetPassword() {
             render={({ message }) => (
               <p
                 className={
-                  errors.passwordConfirm?.type === 'validate'
+                  errors.passwordConfirm?.type === "validate"
                     ? styles.errorPasswordConfirm
                     : styles.error
                 }

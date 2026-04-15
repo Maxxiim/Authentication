@@ -1,19 +1,19 @@
-const http = require('http');
+const http = require("http");
 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-const crypto = require('crypto');
+const crypto = require("crypto");
 
-const JWT_SECRET = 'my_secret_key';
+const JWT_SECRET = "my_secret_key";
 const PORT = 3000;
 
 const users = [
   {
     id: 1,
-    name: 'Alex',
-    email: 'test@mail.ru',
-    password: '123456',
+    name: "Alex",
+    email: "test@mail.ru",
+    password: bcrypt.hashSync("123456", 10),
   },
 ];
 
@@ -21,86 +21,108 @@ const resetStore = new Map();
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
-    let body = '';
+    let body = "";
 
-    console.log(body);
-    req.on('data', (chunk) => (body += chunk));
-    req.on('end', () => {
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
       try {
         resolve(body ? JSON.parse(body) : {});
       } catch (err) {
         reject(err);
       }
     });
-    req.on('error', reject);
+    req.on("error", reject);
   });
 }
 
 function sendJSON(res, statusCode, data) {
-  res.writeHead(statusCode, { 'Content-type': 'application/json' });
+  res.writeHead(statusCode, { "Content-type": "application/json" });
   return res.end(JSON.stringify(data));
 }
 
 const server = http.createServer(async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST,GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.writeHead(204);
     res.end();
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/reset') {
-    const { password } = await parseBody(req);
-    console.log(password);
+  if (req.method === "POST" && req.url === "/reset") {
+    const { password, token } = await parseBody(req);
+
+    const record = resetStore.get(token);
+
+    if (!record) {
+      return sendJSON(res, 404, {
+        message: "Неверная ссылка для восстановления",
+      });
+    }
+
+    if (record.expires < Date.now()) {
+      return sendJSON(res, 400, { message: "Срок действия ссылки истек" });
+    }
+
+    const user = users.find((u) => u.email === record.email);
+
+    if (!user) {
+      return sendJSON(res, 404, { message: "Польователь не найден" });
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashPassword;
+
+    resetStore.delete(token);
+    sendJSON(res, 200, { message: "Пароль успешно обновлен" });
+    return;
   }
 
-  console.log(resetStore);
-
-  if (req.method === 'POST' && req.url === '/restore') {
+  if (req.method === "POST" && req.url === "/restore") {
     const { email } = await parseBody(req);
     const user = users.find((u) => u.email === email);
 
     if (user) {
-      const token = crypto.randomBytes(32).toString('hex');
-      const expires = new Date(Date.now() + 3600000);
+      const token = crypto.randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 15000);
       resetStore.set(token, {
         email,
         expires,
       });
-      const resetLink = 'http://localhost:5173/reset?token=' + token;
-      console.log('Ссылка для сброса ', resetLink);
+      const resetLink = "http://localhost:5173/reset?token=" + token;
+      console.log("Ссылка для сброса ", resetLink);
+      sendJSON(res, 200, { message: "Письмо отправлено на почту" });
     } else {
       sendJSON(res, 401, {
-        message: 'Пользователя с таким email не существует',
+        message: "Пользователя с таким email не существует",
       });
     }
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/login') {
+  if (req.method === "POST" && req.url === "/login") {
     const { name, password } = await parseBody(req);
-
     const user = users.find((u) => u.name === name);
 
-    if (user && password === user.password) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, {
-        expiresIn: '1h',
+        expiresIn: "1h",
       });
       sendJSON(res, 200, { token });
     } else {
-      sendJSON(res, 401, { message: 'Неверный email или пароль' });
+      sendJSON(res, 401, { message: "Неверное имя или пароль" });
     }
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/registration') {
+  if (req.method === "POST" && req.url === "/registration") {
     const { name, email, password } = await parseBody(req);
 
     if (!name || !email || !password) {
-      return sendJSON(res, 400, { message: 'Необходимо заполнить все поля' });
+      return sendJSON(res, 400, { message: "Необходимо заполнить все поля" });
     }
 
     const findName = users.find((u) => u.name === name);
@@ -108,22 +130,22 @@ const server = http.createServer(async (req, res) => {
 
     if (findName && findEmail) {
       return sendJSON(res, 409, {
-        message: 'Пользователь с таким именем и email уже существует',
-        fields: ['name', 'email'],
+        message: "Пользователь с таким именем и email уже существует",
+        fields: ["name", "email"],
       });
     }
 
     if (findName) {
       return sendJSON(res, 409, {
-        message: 'Пользователь с таким именем уже существует',
-        fields: ['name'],
+        message: "Пользователь с таким именем уже существует",
+        fields: ["name"],
       });
     }
 
     if (findEmail) {
       return sendJSON(res, 409, {
-        message: 'Пользователь с таким email уже существует',
-        fields: ['email'],
+        message: "Пользователь с таким email уже существует",
+        fields: ["email"],
       });
     }
 
@@ -143,25 +165,25 @@ const server = http.createServer(async (req, res) => {
         email: newUser.email,
       },
       JWT_SECRET,
-      { expiresIn: '1h' },
+      { expiresIn: "1h" },
     );
 
     users.push(newUser);
 
     sendJSON(res, 201, {
-      message: 'Регистрация прошла успешно',
+      message: "Регистрация прошла успешно",
       token,
       user: { id: newUser.id, name: newUser.name, email: newUser.email },
     });
     return;
   }
 
-  if (req.method === 'GET' && req.url === '/profile') {
+  if (req.method === "GET" && req.url === "/profile") {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      return sendJSON(res, 401, { message: 'Токен не предоставлен' });
+      return sendJSON(res, 401, { message: "Токен не предоставлен" });
     }
 
     try {
@@ -169,10 +191,10 @@ const server = http.createServer(async (req, res) => {
       sendJSON(res, 200, { id: decoded.id, name: decoded.name });
       return;
     } catch (err) {
-      sendJSON(res, 403, { message: 'Недействительный токен' });
+      sendJSON(res, 403, { message: "Недействительный токен" });
     }
   }
-  sendJSON(res, 404, { message: 'Маршрут не найден' });
+  sendJSON(res, 404, { message: "Маршрут не найден" });
 });
 
 server.listen(PORT, () => {

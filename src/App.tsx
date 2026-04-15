@@ -1,8 +1,8 @@
-import { Route, Routes } from 'react-router-dom';
-import { Authorization } from './components/authorization';
-import { Registration } from './components/registration';
-import { RestorePassword } from './components/restorePassword';
-import { ResetPassword } from './components/resetPassword';
+import { Route, Routes } from "react-router-dom";
+import { Authorization } from "./components/authorization";
+import { Registration } from "./components/registration";
+import { RestorePassword } from "./components/restorePassword";
+import { ResetPassword } from "./components/resetPassword";
 
 function App() {
   return (
