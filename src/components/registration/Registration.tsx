@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
-import { url } from '../../api/url';
-import HidePassword from '../../assets/HidePassword';
+import { url } from "../../api/url";
+import HidePassword from "../../assets/HidePassword";
 
-import { useTogglePassword } from '../../utils/togglePassword';
+import { useTogglePassword } from "../../utils/togglePassword";
 
-import styles from './registration.module.scss';
+import styles from "./registration.module.scss";
 
 interface UserLogin {
   name: string;
@@ -20,7 +20,7 @@ interface UserLogin {
 function Registration() {
   const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
 
-  const [generalError, setGeneralError] = useState('');
+  const [generalError, setGeneralError] = useState("");
   const {
     register,
     handleSubmit,
@@ -30,12 +30,12 @@ function Registration() {
     formState: { errors },
     clearErrors,
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      name: '',
-      password: '',
-      email: '',
-      passwordConfirm: '',
+      name: "",
+      password: "",
+      email: "",
+      passwordConfirm: "",
     },
   });
 
@@ -44,8 +44,8 @@ function Registration() {
       const { passwordConfirm, ...dataForServer } = data;
 
       const response = await fetch(`${url}/registration`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataForServer),
       });
 
@@ -56,17 +56,17 @@ function Registration() {
         setGeneralError(responseData.message);
 
         responseData.fields.forEach((field) => {
-          setError(field, { type: 'manual', message: '' });
+          setError(field, { type: "manual", message: "" });
         });
       }
 
       if (!response.ok) {
-        throw new Error(responseData.message || 'Ошибка входа');
+        throw new Error(responseData.message || "Ошибка входа");
       }
-      setGeneralError('');
+      setGeneralError("");
       reset();
       setShowPassword(false);
-      alert('Вы успешно зарегестрировались ');
+      alert("Вы успешно зарегестрировались ");
     } catch (error) {
       throw new Error(error);
     }
@@ -93,20 +93,20 @@ function Registration() {
                   : `${styles.errorsInputDef}`
               }
               id="name"
-              {...register('name', {
+              {...register("name", {
                 required: true,
                 minLength: {
                   value: 2,
-                  message: 'Минимальная длина 2',
+                  message: "Минимальная длина 2",
                 },
                 maxLength: {
                   value: 20,
-                  message: 'Максимальная длина 20',
+                  message: "Максимальная длина 20",
                 },
               })}
-              onFocus={() => clearErrors('name')}
+              onFocus={() => clearErrors("name")}
             />
-            {errors.name && errors.name.type !== 'manual' && (
+            {errors.name && errors.name.type !== "manual" && (
               <p className={styles.error}>{errors.name.message}</p>
             )}
           </label>
@@ -116,17 +116,17 @@ function Registration() {
           <label className={`${styles.label}`} htmlFor="email">
             <span className={`${styles.span}`}>Email</span>
             <input
-              className={errors.email ? `${styles.errorsInput}` : ''}
-              style={{ display: 'relative' }}
+              className={errors.email ? `${styles.errorsInput}` : ""}
+              style={{ display: "relative" }}
               id="email"
-              {...register('email', {
+              {...register("email", {
                 required: true,
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: 'Невалидный email',
+                  message: "Невалидный email",
                 },
               })}
-              onFocus={() => clearErrors('email')}
+              onFocus={() => clearErrors("email")}
             />
           </label>
           {errors.email && (
@@ -138,18 +138,18 @@ function Registration() {
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>Пароль</span>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
-              {...register('password', {
+              {...register("password", {
                 required: true,
                 minLength: {
                   value: 6,
-                  message: 'Минимальное количество символов 6',
+                  message: "Минимальное количество символов 6",
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
                   message:
-                    'Необходимо указать как минимум одну букву и одну цифру',
+                    "Необходимо указать как минимум одну букву и одну цифру",
                 },
               })}
             />
@@ -160,7 +160,7 @@ function Registration() {
             render={({ message }) => (
               <p
                 className={
-                  errors.password?.type === 'pattern'
+                  errors.password?.type === "pattern"
                     ? styles.errorPassword
                     : styles.error
                 }
@@ -175,12 +175,12 @@ function Registration() {
           <label className={`${styles.label}`} htmlFor="passwordConfirm">
             <span className={`${styles.span}`}>Подтвердить пароль</span>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="passwordConfirm"
-              {...register('passwordConfirm', {
+              {...register("passwordConfirm", {
                 required: true,
                 validate: (value) =>
-                  value === watch('password') || 'Пароли не совпадают',
+                  value === watch("password") || "Пароли не совпадают",
               })}
             />
             <button
@@ -202,7 +202,7 @@ function Registration() {
             render={({ message }) => (
               <p
                 className={
-                  errors.passwordConfirm?.type === 'validate'
+                  errors.passwordConfirm?.type === "validate"
                     ? styles.errorPasswordConfirm
                     : styles.error
                 }
@@ -212,6 +212,14 @@ function Registration() {
             )}
           />
         </div>
+
+        {generalError && (
+          <Link className={`${styles.restore}`} to="/restore">
+            <button className={`${styles.restore}`} type="button">
+              Восстановить пароль?
+            </button>
+          </Link>
+        )}
 
         <button className={`${styles.btn}`} type="submit">
           Регистрация

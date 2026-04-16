@@ -6,12 +6,16 @@ import { url } from "../../api/url";
 import { useTogglePassword } from "../../utils/togglePassword";
 
 import styles from "./resetPassword.module.scss";
+import { useNavigate } from "react-router-dom";
 
 function ResetPassword() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -36,8 +40,15 @@ function ResetPassword() {
         body: JSON.stringify(dataForServer),
       });
 
-      const responseData = await response.json();
-      console.log(responseData);
+      if (response) {
+        const responseData = await response.json();
+        console.log(responseData);
+        alert("Пароль изменен");
+        reset();
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +63,6 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>Пароль</span>
             <input
-              value={"12314124a"}
               // type={showPassword ? 'text' : 'password'}
               type="text"
               id="password"
@@ -91,7 +101,6 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="passwordConfirm">
             <span className={`${styles.span}`}>Подтвердить пароль</span>
             <input
-              value={"12314124a"}
               type="text"
               // type={showPassword ? 'text' : 'password'}
               id="passwordConfirm"

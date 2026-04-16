@@ -68,7 +68,7 @@ function Authorization() {
       <form className={`${styles.form}`} onSubmit={handleSubmit(onSubmit)}>
         <div className={`${styles.block}${styles.name}`}>
           <label className={`${styles.label}`} htmlFor="name">
-            <span className={`${styles.span}`}>name</span>
+            <span className={`${styles.span}`}>логин</span>
             <input
               style={{ display: "relative" }}
               id="name"
@@ -87,7 +87,7 @@ function Authorization() {
 
         <div className={`${styles.block}${styles.password}`}>
           <label className={`${styles.label}`} htmlFor="password">
-            <span className={`${styles.span}`}>password</span>
+            <span className={`${styles.span}`}>пароль</span>
             <input
               type={showPassword ? "text" : "password"}
               id="password"

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { url } from "../../api/url";
 
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import styles from "./restore.module.scss";
 import { useState } from "react";
@@ -22,8 +22,6 @@ function RestorePassword() {
     },
   });
 
-  const navigate = useNavigate();
-
   const onSubmit = async (data: { email: string }) => {
     setMessage("");
 
@@ -38,9 +36,7 @@ function RestorePassword() {
       if (responseData) {
         reset();
         setMessage("Успешно! Письмо отправлено на почту!");
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+
       }
     } catch (error) {
       console.error(error);
@@ -73,6 +69,11 @@ function RestorePassword() {
         </div>
         <button className={`${styles.btn}`}>Отправить</button>
       </form>
+      {message && (
+        <Link className={`${styles.message}`} to="/">
+          Хотите вернуться на главную страницу?
+        </Link>
+      )}
     </div>
   );
 }

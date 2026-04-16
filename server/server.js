@@ -8,6 +8,9 @@ const crypto = require("crypto");
 const JWT_SECRET = "my_secret_key";
 const PORT = 3000;
 
+const { parseBody } = require("./utils/parsedBody.ts");
+const { sendJSON } = require("./utils/sendJSON.ts");
+
 const users = [
   {
     id: 1,
@@ -18,27 +21,6 @@ const users = [
 ];
 
 const resetStore = new Map();
-
-function parseBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = "";
-
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch (err) {
-        reject(err);
-      }
-    });
-    req.on("error", reject);
-  });
-}
-
-function sendJSON(res, statusCode, data) {
-  res.writeHead(statusCode, { "Content-type": "application/json" });
-  return res.end(JSON.stringify(data));
-}
 
 const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -113,7 +95,7 @@ const server = http.createServer(async (req, res) => {
       });
       sendJSON(res, 200, { token });
     } else {
-      sendJSON(res, 401, { message: "Неверное имя или пароль" });
+      sendJSON(res, 401, { message: "Неверное имя пользователя или пароль" });
     }
     return;
   }

@@ -1,32 +1,34 @@
-.form{
+.form {
     width: 250px;
     gap: 20px;
     display: flex;
     flex-direction: column;
 }
 
-.block{
+.block {
     position: relative;
 }
 
-input{
+input {
     outline: none;
-     outline: none;
-     font-size: 16;
-     color: black;
-     padding: 10px;
-     border-radius: 5px;
+    outline: none;
+    font-size: 16;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
 }
-.wrapperHeader{
+
+.wrapperHeader {
     position: relative;
     display: inline-block;
     text-align: center;
     margin-bottom: 20px;
     width: 250px;
 }
-.title{
+
+.title {
     text-transform: uppercase;
-    color:#000;
+    color: #000;
     width: 100%;
     font-size: 30px;
     text-align: center;
@@ -35,14 +37,15 @@ input{
 }
 
 
-.errorPassword{
+.errorPassword {
     position: relative;
     color: red;
     font-size: 13px;
     display: inline-flex;
 }
 
-.error{
+.error {
+    width: 260px;
     position: absolute;
     left: 0;
     bottom: -18px;
@@ -51,12 +54,13 @@ input{
     display: inline-flex;
 }
 
-.span{
+.span {
     display: inline-block;
-    margin-bottom: 5px;    
+    margin-bottom: 5px;
 }
 
-.password, .name{
+.password,
+.name {
     width: 250px;
 }
 
@@ -66,52 +70,52 @@ input{
     flex-direction: column;
 }
 
-.passwordIcon{
+.passwordIcon {
     border: none;
     background: none;
     position: absolute;
     bottom: 6px;
     right: 0px;
-    stroke:#727272;
+    stroke: #727272;
     fill: none;
     transition: all .2s ease-in-out;
-    
-    &:hover{
+
+    &:hover {
         cursor: pointer;
-    stroke:red;
+        stroke: red;
     }
 }
 
-.passwordIconActive{
-   border: none;
+.passwordIconActive {
+    border: none;
     background: none;
     position: absolute;
     bottom: 6px;
     right: 0px;
-    stroke:red;
+    stroke: red;
     fill: none;
     transition: all .2s ease-in-out;
-    
-    &:hover{
+
+    &:hover {
         cursor: pointer;
-    stroke:727272;
-    } 
+        stroke: 727272;
+    }
 }
 
-.restore{
+.restore {
     cursor: pointer;
     margin-top: -15px;
     border: none;
     background: none;
     transition: all .2s ease-in-out;
-    
-    
-    &:hover{
+
+
+    &:hover {
         color: red;
     }
 }
 
-.btn{
+.btn {
     width: 100%;
     cursor: pointer;
     border: none;
@@ -120,16 +124,16 @@ input{
     padding: 15px;
     border-radius: 10px;
     transition: all .18s ease-in-out;
-    
-    
-    &:hover{
-    background: #cbcbcb;
-    color: #000;
-    z-index: 100;
+
+
+    &:hover {
+        background: #cbcbcb;
+        color: #000;
+        z-index: 100;
     }
 }
 
-.btnRegister{
+.btnRegister {
     position: absolute;
     right: 0;
     top: 0;
@@ -141,10 +145,10 @@ input{
     padding: 15px;
     border-radius: 10px;
     transition: all .18s ease-in-out;
-    
-    &:hover{
-    background: #cbcbcb;
-    color: #000;
-    z-index: 100;
-    } 
+
+    &:hover {
+        background: #cbcbcb;
+        color: #000;
+        z-index: 100;
+    }
 }
