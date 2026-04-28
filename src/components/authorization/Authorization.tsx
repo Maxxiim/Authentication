@@ -6,18 +6,11 @@ import { Link } from "react-router-dom";
 
 import HidePassword from "../../assets/HidePassword";
 import { useTogglePassword } from "../../utils/togglePassword";
+import type { UserFieldLogin } from "../../shared/types/type";
 
 import styles from "./authorization.module.scss";
 
-interface UserLogin {
-  name: string;
-  password: string;
-}
-
 function Authorization() {
-  const [error, setError] = useState("");
-  const { showPassword, togglePassword } = useTogglePassword();
-
   const {
     register,
     handleSubmit,
@@ -31,7 +24,10 @@ function Authorization() {
     },
   });
 
-  const onSubmit = async (data: UserLogin) => {
+  const [error, setError] = useState("");
+  const { showPassword, togglePassword } = useTogglePassword();
+
+  const onSubmit = async (data: UserFieldLogin) => {
     try {
       const response = await fetch(`${url}/login`, {
         method: "POST",
@@ -45,12 +41,13 @@ function Authorization() {
         throw new Error(responseData.message || "Ошибка входа");
       }
       alert("Вы успешно авторизовались ");
-      console.log(data);
       localStorage.setItem("token", responseData.token);
       reset();
       setError("");
     } catch (error) {
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      }
     }
   };
 

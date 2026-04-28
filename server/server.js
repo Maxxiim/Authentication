@@ -79,7 +79,7 @@ const server = http.createServer(async (req, res) => {
       sendJSON(res, 200, { message: "Письмо отправлено на почту" });
     } else {
       sendJSON(res, 401, {
-        message: "Пользователя с таким email не существует",
+        message: "Пользователя с таким email не существует.",
       });
     }
     return;
@@ -104,7 +104,7 @@ const server = http.createServer(async (req, res) => {
     const { name, email, password } = await parseBody(req);
 
     if (!name || !email || !password) {
-      return sendJSON(res, 400, { message: "Необходимо заполнить все поля" });
+      return sendJSON(res, 400, { message: "Необходимо заполнить все поля." });
     }
 
     const findName = users.find((u) => u.name === name);
@@ -112,14 +112,14 @@ const server = http.createServer(async (req, res) => {
 
     if (findName && findEmail) {
       return sendJSON(res, 409, {
-        message: "Пользователь с таким именем и email уже существует",
+        message: "Пользователь с таким именем и email уже существует.",
         fields: ["name", "email"],
       });
     }
 
     if (findName) {
       return sendJSON(res, 409, {
-        message: "Пользователь с таким именем уже существует",
+        message: "Пользователь с таким именем уже существует.",
         fields: ["name"],
       });
     }

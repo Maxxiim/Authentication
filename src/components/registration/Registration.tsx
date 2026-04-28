@@ -2,25 +2,21 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import { useNavigate } from "react-router-dom";
 
 import { url } from "../../api/url";
+
 import HidePassword from "../../assets/HidePassword";
 
 import { useTogglePassword } from "../../utils/togglePassword";
+import type { UserFieldRegistration } from "../../shared/types/type";
 
 import styles from "./registration.module.scss";
 
-interface UserLogin {
-  name: string;
-  password: string;
-  email: string;
-  passwordConfirm: string;
-}
-
 function Registration() {
   const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
-
   const [generalError, setGeneralError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -39,7 +35,9 @@ function Registration() {
     },
   });
 
-  const onSubmit = async (data: UserLogin) => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: UserFieldRegistration) => {
     try {
       const { passwordConfirm, ...dataForServer } = data;
 
@@ -52,11 +50,15 @@ function Registration() {
       const responseData = await response.json();
 
       if (responseData.fields && Array.isArray(responseData.fields)) {
-        console.log(responseData);
         setGeneralError(responseData.message);
 
-        responseData.fields.forEach((field) => {
-          setError(field, { type: "manual", message: "" });
+        responseData.fields.forEach((field: string) => {
+          if (field === "name") {
+            setError(field, { type: "manual", message: "" });
+          }
+          if (field === "email") {
+            setError(field, { type: "manual", message: "" });
+          }
         });
       }
 
@@ -67,8 +69,9 @@ function Registration() {
       reset();
       setShowPassword(false);
       alert("Вы успешно зарегестрировались ");
+      navigate("/");
     } catch (error) {
-      throw new Error(error);
+      throw new Error(String(error));
     }
   };
 

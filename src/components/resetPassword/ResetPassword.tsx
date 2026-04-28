@@ -2,15 +2,14 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
 import HidePassword from "../../assets/HidePassword";
 import { url } from "../../api/url";
-
-import { useTogglePassword } from "../../utils/togglePassword";
-
-import styles from "./resetPassword.module.scss";
 import { useNavigate } from "react-router-dom";
 
-function ResetPassword() {
-  const navigate = useNavigate();
+import { useTogglePassword } from "../../utils/togglePassword";
+import type { UserFieldResetPassword } from "../../shared/types/type";
 
+import styles from "./resetPassword.module.scss";
+
+function ResetPassword() {
   const {
     register,
     handleSubmit,
@@ -25,7 +24,11 @@ function ResetPassword() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const navigate = useNavigate();
+
+  const { showPassword, togglePassword } = useTogglePassword();
+
+  const onSubmit = async (data: UserFieldResetPassword) => {
     try {
       const urlParams = new URLSearchParams(window.location.search);
 
@@ -50,11 +53,9 @@ function ResetPassword() {
         }, 2000);
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(String(error));
     }
   };
-
-  const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
 
   return (
     <div className="wrapper">
@@ -63,8 +64,7 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>Пароль</span>
             <input
-              // type={showPassword ? 'text' : 'password'}
-              type="text"
+              type={showPassword ? "text" : "password"}
               id="password"
               {...register("password", {
                 required: true,
@@ -101,8 +101,7 @@ function ResetPassword() {
           <label className={`${styles.label}`} htmlFor="passwordConfirm">
             <span className={`${styles.span}`}>Подтвердить пароль</span>
             <input
-              type="text"
-              // type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="passwordConfirm"
               {...register("passwordConfirm", {
                 required: true,
