@@ -1,0 +1,124 @@
+.restore {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 24px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.block {
+    position: relative;
+}
+
+input {
+    outline: none;
+    width: 100%;
+    font-size: 15px;
+    color: #111827;
+    padding: 11px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    transition: border-color .2s ease, box-shadow .2s ease;
+
+    &:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+}
+
+.title {
+    color: #111827;
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+.error {
+    width: 260px;
+    position: absolute;
+    left: 0;
+    bottom: -18px;
+    color: red;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    background: #fff;
+}
+
+.btn {
+    margin-top: 4px;
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    background: #111827;
+    padding: 12px 14px;
+    border-radius: 10px;
+    transition: all .18s ease-in-out;
+
+
+    &:hover {
+        background: #cbcbcb;
+        color: #000;
+        z-index: 100;
+    }
+}
+
+.messageSuccess {
+    padding: 15px;
+    background: grey;
+    width: 400px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.messageInvalid {
+    padding: 10px;
+    margin-top: 12px;
+    border-radius: 10px;
+    background: #ef4444;
+    color: #fff;
+}
+
+.messageInvalidLink {
+    color: #fff;
+    margin-left: 10px;
+}
+
+.message {
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+    color: #374151;
+    transition: all .18s ease-in-out;
+
+    &:hover {
+        color: #111827;
+        z-index: 100;
+    }
+}

@@ -1,0 +1,179 @@
+.topLink {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.errorsInput {
+    border: 1px solid #ef4444;
+}
+
+.errorsInputDef {
+    border: 1px solid #d1d5db;
+}
+
+.block {
+    position: relative;
+}
+
+input {
+    outline: none;
+    width: 100%;
+    font-size: 15px;
+    color: #111827;
+    padding: 11px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    transition: border-color .2s ease, box-shadow .2s ease;
+
+    &:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+}
+
+.wrapperHeader {
+    position: relative;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.title {
+    color: #111827;
+    width: 100%;
+    font-size: 30px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+
+.passwordConfirm {
+    margin-bottom: 15px;
+}
+
+.errorPasswordConfirm {
+    color: #dc2626;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.errorPassword {
+    color: #dc2626;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.error {
+    color: #dc2626;
+    font-size: 13px;
+    display: inline-flex;
+}
+
+.span {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.password,
+.name {
+    width: 100%;
+}
+
+.label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.passwordIcon {
+    border: none;
+    background: none;
+    position: absolute;
+    bottom: 8px;
+    right: 6px;
+    stroke: #6b7280;
+    fill: none;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        stroke: red;
+    }
+}
+
+.passwordIconActive {
+    border: none;
+    background: none;
+    position: absolute;
+    bottom: 8px;
+    right: 6px;
+    stroke: #4f46e5;
+    fill: none;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        stroke: 727272;
+    }
+}
+
+.btn {
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    background: #111827;
+    padding: 12px 14px;
+    border-radius: 10px;
+    transition: all .2s ease-in;
+
+
+    &:hover {
+        background: #cbcbcb;
+        color: #000;
+        z-index: 100;
+    }
+}
+
+.btnRegister {
+    align-self: flex-end;
+    width: auto;
+    min-width: 130px;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    background: #111827;
+    padding: 10px 14px;
+    border-radius: 10px;
+    transition: all .18s ease-in-out;
+
+    &:hover {
+        background: #cbcbcb;
+        color: #000;
+        z-index: 100;
+    }
+}
+
+.restore {
+    cursor: pointer;
+    margin-top: -4px;
+    border: none;
+    background: none;
+    transition: all .2s ease-in-out;
+
+
+    &:hover {
+        color: #111827;
+    }
+}

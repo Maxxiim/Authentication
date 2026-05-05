@@ -5,43 +5,38 @@ h1,h2,h3,h4,h5,h6,p, a{
     padding: 0;
     margin: 0;
 }
-body{
-      font-family: "Lora", serif;
-    font-size: 16px;
-    color: black;
-    height: 100%;   
-    opacity: 0.8;
+
+a{
+    text-decoration: none;
 }
-.form{
+
+body{
+    font-family: Inter, "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    color: #1f2937;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f3f6fb 0%, #eef2f7 100%);
+}
+
+.container{
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    gap: 20px   ;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
 }
 
 .wrapper{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-
-.title{
-    color:#fff;
     width: 100%;
-    font-size: 30px;
-    text-align: center;
-    font-weight: 300;
+    max-width: 420px;
+    padding: 28px 24px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
-.firstName, .password{
-    position: relative;
-}
-
-.error{
-    position: absolute;
-    left: 0;
-    bottom: -30px;
-    font-size: 13px;
-    display: inline-flex;
-    color: red;
-}
