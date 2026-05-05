@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { url } from "../../api/url";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { Link } from "react-router-dom";
 
+import { authApi } from "../../api/authApi";
 import HidePassword from "../../assets/HidePassword";
 import { useTogglePassword } from "../../utils/togglePassword";
 import type { UserFieldLogin } from "../../shared/types/type";
@@ -29,19 +29,15 @@ function Authorization() {
 
   const onSubmit = async (data: UserFieldLogin) => {
     try {
-      const response = await fetch(`${url}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.name, password: data.password }),
-      });
+      const response = await authApi.login(data);
 
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(responseData.message || "Ошибка входа");
+      if (response.message || !response.token) {
+        setError(response.message ?? "Ошибка входа");
+        return;
       }
+
       alert("Вы успешно авторизовались ");
-      localStorage.setItem("token", responseData.token);
+      localStorage.setItem("token", response.token);
       reset();
       setError("");
     } catch (error) {
@@ -53,7 +49,7 @@ function Authorization() {
 
   return (
     <div className="wrapper">
-      <Link to="/registration">
+      <Link className={styles.topLink} to="/registration">
         <button className={`${styles.btn} ${styles.btnRegister}`}>
           Регистрация
         </button>

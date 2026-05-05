@@ -8,6 +8,7 @@ import { useTogglePassword } from "../../utils/togglePassword";
 import type { UserFieldResetPassword } from "../../shared/types/type";
 
 import styles from "./resetPassword.module.scss";
+import { useState } from "react";
 
 function ResetPassword() {
   const {
@@ -24,18 +25,33 @@ function ResetPassword() {
     },
   });
 
+  const [generalError, setGeneralError] = useState("");
+
   const navigate = useNavigate();
 
   const { showPassword, togglePassword } = useTogglePassword();
 
+  function changePage() {
+    const timer = setTimeout(() => {
+      return navigate("/");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }
+
   const onSubmit = async (data: UserFieldResetPassword) => {
     try {
       const urlParams = new URLSearchParams(window.location.search);
-
       const token = urlParams.get("token");
-      data["token"] = token;
 
-      const { passwordConfirm, ...dataForServer } = data;
+      if (!token) {
+        setGeneralError("Ссылка для сброса пароля недействительна.");
+        return;
+      }
+
+      const dataForServer = { ...data };
+      dataForServer.token = token;
+      delete dataForServer.passwordConfirm;
 
       const response = await fetch(`${url}/reset`, {
         method: "POST",
@@ -43,23 +59,29 @@ function ResetPassword() {
         body: JSON.stringify(dataForServer),
       });
 
-      if (response) {
-        const responseData = await response.json();
-        console.log(responseData);
-        alert("Пароль изменен");
-        reset();
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        setGeneralError(responseData.message ?? "Не удалось изменить пароль.");
+        return;
       }
+
+      setGeneralError("");
+      alert("Пароль изменен");
+      reset();
+      changePage();
     } catch (error) {
-      throw new Error(String(error));
+      if (error instanceof Error) {
+        setGeneralError(error.message);
+      } else {
+        setGeneralError("Произошла ошибка при сбросе пароля.");
+      }
     }
   };
 
   return (
     <div className="wrapper">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={`${styles.block} ${styles.password}`}>
           <label className={`${styles.label}`} htmlFor="password">
             <span className={`${styles.span}`}>Пароль</span>
@@ -84,17 +106,16 @@ function ResetPassword() {
             errors={errors}
             name="password"
             render={({ message }) => (
-              <p
-                className={
-                  errors.password?.type === "pattern"
-                    ? styles.errorPassword
-                    : styles.error
-                }
-              >
+              <p className={`${styles.validationError} ${styles.errorVisible}`}>
                 {message}
               </p>
             )}
           />
+          {!errors.password && (
+            <p className={`${styles.validationError} ${styles.errorPlaceholder}`}>
+              {" "}
+            </p>
+          )}
         </div>
 
         <div className={`${styles.block} ${styles.passwordConfirm}`}>
@@ -126,23 +147,27 @@ function ResetPassword() {
             errors={errors}
             name="passwordConfirm"
             render={({ message }) => (
-              <p
-                className={
-                  errors.passwordConfirm?.type === "validate"
-                    ? styles.errorPasswordConfirm
-                    : styles.error
-                }
-              >
+              <p className={`${styles.validationError} ${styles.errorVisible}`}>
                 {message}
               </p>
             )}
           />
+          {!errors.passwordConfirm && (
+            <p className={`${styles.validationError} ${styles.errorPlaceholder}`}>
+              {" "}
+            </p>
+          )}
         </div>
 
         <button className={`${styles.btn}`} type="submit">
-          Регистрация
+          Сбросить пароль
         </button>
       </form>
+      <p
+        className={`${styles.error} ${generalError ? styles.errorVisible : styles.errorPlaceholder}`}
+      >
+        {generalError || " "}
+      </p>
     </div>
   );
 }

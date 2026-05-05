@@ -4,14 +4,14 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { useNavigate } from "react-router-dom";
 
-import { url } from "../../api/url";
-
 import HidePassword from "../../assets/HidePassword";
 
 import { useTogglePassword } from "../../utils/togglePassword";
 import type { UserFieldRegistration } from "../../shared/types/type";
 
 import styles from "./registration.module.scss";
+
+import { authApi } from "../../api/authApi";
 
 function Registration() {
   const { showPassword, setShowPassword, togglePassword } = useTogglePassword();
@@ -39,20 +39,16 @@ function Registration() {
 
   const onSubmit = async (data: UserFieldRegistration) => {
     try {
-      const { passwordConfirm, ...dataForServer } = data;
+      const dataForServer = { ...data };
 
-      const response = await fetch(`${url}/registration`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataForServer),
-      });
+      delete dataForServer.passwordConfirm;
 
-      const responseData = await response.json();
+      const response = await authApi.registration(dataForServer);
 
-      if (responseData.fields && Array.isArray(responseData.fields)) {
-        setGeneralError(responseData.message);
+      if (response.fields && Array.isArray(response.fields)) {
+        setGeneralError(response.message);
 
-        responseData.fields.forEach((field: string) => {
+        response.fields.forEach((field: string) => {
           if (field === "name") {
             setError(field, { type: "manual", message: "" });
           }
@@ -60,24 +56,24 @@ function Registration() {
             setError(field, { type: "manual", message: "" });
           }
         });
+        return;
       }
 
-      if (!response.ok) {
-        throw new Error(responseData.message || "Ошибка входа");
-      }
       setGeneralError("");
       reset();
       setShowPassword(false);
-      alert("Вы успешно зарегестрировались ");
+      alert("Вы успешно зарегестрировались");
       navigate("/");
     } catch (error) {
-      throw new Error(String(error));
+      if (error instanceof Error) {
+        setGeneralError(error.message);
+      }
     }
   };
 
   return (
     <div className="wrapper">
-      <Link to="/">
+      <Link className={styles.topLink} to="/">
         <button className={`${styles.btn} ${styles.btnRegister}`}>Вход</button>
       </Link>
       <div className={`${styles.wrapperHeader}`}>
@@ -218,9 +214,7 @@ function Registration() {
 
         {generalError && (
           <Link className={`${styles.restore}`} to="/restore">
-            <button className={`${styles.restore}`} type="button">
-              Восстановить пароль?
-            </button>
+            Восстановить пароль?
           </Link>
         )}
 

@@ -7,7 +7,8 @@ export interface UserFieldRegistration {
   name: string;
   password: string;
   email: string;
-  passwordConfirm: string;
+  passwordConfirm?: string;
+  message?: string;
 }
 
 export interface UserFieldRestore {
@@ -15,6 +16,7 @@ export interface UserFieldRestore {
 }
 
 export interface UserFieldResetPassword {
-  password:string;
-  token?:string | null;
+  password: string;
+  token?: string | null;
+  passwordConfirm?:string;
 }
