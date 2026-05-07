@@ -1,8 +1,8 @@
 const http = require("http");
 
 const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
 const bcrypt = require("bcrypt");
-
 const crypto = require("crypto");
 
 const JWT_SECRET = "my_secret_key";
@@ -23,7 +23,10 @@ const users = [
 const resetStore = new Map();
 
 const server = http.createServer(async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
   res.setHeader("Access-Control-Allow-Methods", "POST,GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
@@ -69,7 +72,7 @@ const server = http.createServer(async (req, res) => {
 
     if (user) {
       const token = crypto.randomBytes(32).toString("hex");
-      const expires = new Date(Date.now() + 15000);
+      const expires = new Date(Date.now() + 300000);
       resetStore.set(token, {
         email,
         expires,
@@ -78,8 +81,8 @@ const server = http.createServer(async (req, res) => {
       console.log("Ссылка для сброса ", resetLink);
       sendJSON(res, 200, { message: "Письмо отправлено на почту" });
     } else {
-      sendJSON(res, 401, {
-        message: "Пользователя с таким email не существует.",
+      sendJSON(res, 200, {
+        message: "Если такой email существует, письмо будет отправлено.",
       });
     }
     return;
@@ -93,7 +96,10 @@ const server = http.createServer(async (req, res) => {
       const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, {
         expiresIn: "1h",
       });
-      sendJSON(res, 200, { token });
+
+      const cookie = `token=${token}; httpOnly; Secure; SameSite=Strict; Max-Age=3600; Path=/`;
+      res.setHeader("Set-Cookie", cookie);
+      sendJSON(res, 200, { cookie });
     } else {
       sendJSON(res, 401, { message: "Неверное имя пользователя или пароль" });
     }
@@ -160,22 +166,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.method === "GET" && req.url === "/profile") {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1];
-
-    if (!token) {
-      return sendJSON(res, 401, { message: "Токен не предоставлен" });
-    }
-
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      sendJSON(res, 200, { id: decoded.id, name: decoded.name });
-      return;
-    } catch (err) {
-      sendJSON(res, 403, { message: "Недействительный токен" });
-    }
-  }
   sendJSON(res, 404, { message: "Маршрут не найден" });
 });
 

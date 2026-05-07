@@ -31,13 +31,12 @@ function Authorization() {
     try {
       const response = await authApi.login(data);
 
-      if (response.message || !response.token) {
-        setError(response.message ?? "Ошибка входа");
+      if (response.message && response.status !== 200) {
+        setError(response.message);
         return;
       }
 
       alert("Вы успешно авторизовались ");
-      localStorage.setItem("token", response.token);
       reset();
       setError("");
     } catch (error) {
