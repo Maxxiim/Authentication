@@ -1,43 +1,32 @@
 import type {
   UserFieldRegistration,
   UserFieldLogin,
+  UserResponse,
 } from "./../shared/types/type";
+
+import { fetchResponse } from "../utils/fetchResponse";
+
 import { url } from "../api/url";
 
 export const authApi = {
   login: async (data: UserFieldLogin) => {
-    const response = await fetch(`${url}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    return await fetchResponse<UserResponse, UserFieldLogin>(
+      url,
+      "login",
+      "POST",
+      data,
+      {
+        credentials: "include",
       },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      return responseData;
-    }
-
-    return responseData;
+    );
   },
+
   registration: async (data: UserFieldRegistration) => {
-    const response = await fetch(`${url}/registration`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      return responseData;
-    }
-
-    return responseData;
+    return await fetchResponse<UserResponse, UserFieldRegistration>(
+      url,
+      "registration",
+      "POST",
+      data,
+    );
   },
 };
