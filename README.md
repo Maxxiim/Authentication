@@ -70,6 +70,3 @@ npm run preview — предпросмотр production-сборки
 npm run lint — проверка ESLint
 npm run test — запуск тестов Vitest
 ```
-
-Цель
-Попробовать развернуть на node.js что-то простенькое)
